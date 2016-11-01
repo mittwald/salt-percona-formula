@@ -1,0 +1,20 @@
+####
+#### Don't touch, managed by salt
+####
+{%- macro prints(s,d='') %}
+{%- if s is string %}
+{%- if d == '' or d == 'None' %}
+{{s}}
+{%- elif d is string or d is number %}
+{{s}} = {{d}}
+{%- elif d is mapping %}
+
+[{{ s }}]{{ prints(d) }}
+{%- endif %}
+{%- elif s is mapping %}
+{%- for k,v in s|dictsort -%}
+{{ prints(k,v) }}
+{%- endfor %}
+{%- endif %}
+{%- endmacro %}
+{{ prints(config) }}

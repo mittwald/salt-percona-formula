@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml:ts=2:sw=2
+mysql:
+  version: 5.7
+  server_svc: mysql
+  root_user: root
+  reload_on_change: False
+  datadir: /var/lib/mysql

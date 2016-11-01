@@ -1,0 +1,68 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja:ts=2:sw=2
+
+{% set cur_os = salt['grains.get']('os') %}
+{% set cur_oscodename = salt['grains.get']('oscodename') %}
+{% set cur_kernel = salt['grains.get']('kernelrelease') %}
+
+{## Start with  defaults from defaults.yaml ##}
+{% import_yaml "percona/defaults.yaml" as default_settings %}
+
+{% set os_map = salt['grains.filter_by']({
+    'Debian': {
+      'server_pkg': 'percona-server-server',
+      'client_pkg': 'percona-server-client',
+      'config_directory': '/etc/mysql/conf.d',
+      'my_cnf_path': '/etc/mysql/my.cnf',
+      'debconf_utils': 'debconf-utils',
+      'python_mysql': 'python-mysqldb',
+      'repos': [
+        {
+          'name': 'deb http://repo.percona.com/apt ' ~ cur_oscodename ~ ' main',
+          'key_url': 'salt://percona/files/percona-keyring.gpg',
+        },
+      ]
+    },
+    'RedHat': {
+      'server_pkg': 'Percona-Server-server',
+      'client_pkg': 'Percona-Server-client',
+      'config_directory': '/etc/my.cnf.d',
+      'my_cnf_path': '/etc/my.cnf',
+      'python_mysql': 'MySQL-python',
+      'repos': [
+        {
+          'baseurl': 'http://repo.percona.com/release/$releasever/RPMS/$basearch',
+          'name': 'percona-release',
+          'humanname': 'Percona-Release YUM repository - $basearch',
+          'gpgkey': 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Percona',
+          'gpgcheck': 1,
+        },
+        {
+          'baseurl': 'http://repo.percona.com/release/$releasever/RPMS/noarch',
+          'name': 'percona-release-noarch',
+          'humanname': 'Percona-Release YUM repository - noarch',
+          'gpgkey': 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Percona',
+          'gpgcheck': 1,
+        },
+      ],
+    },
+  }
+  , grain="os_family")
+%}
+
+{## Merge the flavor_map to the default settings ##}
+{% do salt['defaults.merge'](default_settings.mysql,os_map) %}
+
+{## Merge in percona pillar ##}
+{% set percona_settings = salt['pillar.get'](
+    'mysql',
+    default=default_settings.mysql,
+    merge=True)
+%}
+
+{% if grains.os_family == 'RedHat' %}
+{%   set versionstring = percona_settings.version | replace('.','') %}
+{% else %}
+{%   set versionstring = percona_settings.version %}
+{% endif %}
+{% do percona_settings.update({ 'versionstring': versionstring }) %}

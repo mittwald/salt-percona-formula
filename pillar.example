@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml:ts=2:sw=2
+#
+# Not all values listed here are considered as default-variables
+#
+mysql:
+  version: 5.7
+  repos:
+    # each listitem will directly passed to states.pkgrepo
+    # yums gpgkey beginning with 'file://' will be copied from salt://percona/files/
+    - name: deb https://repo.example.com/apt xenial main
+      key_url: salt://percona/files/my-keyring.gpg
+  root_password: <password>
+  reload_on_change: True
+  datadir: /var/lib/mysql
+  config_directory: #there is a default for every distribution but you can overvrite if you want to
+  config:
+    # defintions for my.cnf are going to overwrite default-config
+    # every other file will managed in config directory
+    my.cnf:
+    server.cnf:
+      client:
+        port: 3306
+        socket: /var/run/mysqld/mysqld.sock
+      mysqld_safe:
+        socket: /var/run/mysqld/mysqld.sock
+        nice: 0
+      mysqld:
+        user: mysql
+        pid_file: /var/run/mysqld/mysqld.pid
+        socket: /var/run/mysqld/mysqld.sock
+        port: 3306
+        basedir: /usr
+        datadir: /var/lib/mysql
+        tmpdir: /tmp
+        lc_messages_dir:  /usr/share/mysql
+        bind_address: 127.0.0.1
+        symbolic_links: 0
+        skip_external_locking: noarg_present
+      mysqldump:
+        quick: noarg_present
+        quote_names: noarg_present
+        max_allowed_packet: 16M
+      isamchk:
+        key_buffer_size: 16M
