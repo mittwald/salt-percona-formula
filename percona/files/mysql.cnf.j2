@@ -3,7 +3,7 @@
 ####
 {%- macro prints(s,d='') %}
 {%- if s is string %}
-{%- if d == '' or d == 'None' %}
+{%- if d == '' or d == 'None' or d == 'no_param' %}
 {{s}}
 {%- elif d is string or d is number %}
 {{s}} = {{d}}
@@ -17,4 +17,7 @@
 {%- endfor %}
 {%- endif %}
 {%- endmacro %}
+
+{%- set append = config.pop('append', {}) %}
 {{ prints(config) }}
+{{ prints(append) }}

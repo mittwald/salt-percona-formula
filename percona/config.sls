@@ -8,13 +8,16 @@
     - require_in:
       - pkg: percona_client
 
-{% if percona_settings.reload_on_change %}
 include:
   - .service
-{% endif %}
 
 {% if 'config' in percona_settings and percona_settings.config is mapping %}
-{%   for file, content in percona_settings.config.iteritems() %}
+{% set global_params= {} %}
+{%   if 'my.cnf' in percona_settings.config %}
+{%     do global_params.update(percona_settings.config['my.cnf'].get('mysqld',{})) %}
+{%   endif %}
+{%   for file, content in percona_settings.config|dictsort %}
+{%     do global_params.update(percona_settings.config[file].get('mysqld',{})) if file != 'my.cnf' %}
 {%     if file == 'my.cnf' %}
 {%       set filepath = percona_settings.my_cnf_path %}
 {%     else %}
@@ -35,3 +38,14 @@ include:
 {%     endif %}
 {%   endfor %}
 {% endif %}
+
+{% for global, value in global_params.iteritems() %}
+{{ global }}:
+  percona.setglobal:
+    - value: {{ value }}
+    - connection_pass: {{ percona_settings.root_password }}
+    - fail_on_missing: False
+    - fail_on_readonly: False
+    - require:
+      - service: percona_svc
+{% endfor %}

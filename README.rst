@@ -21,7 +21,7 @@ Available states
 ``percona.server``
 -------
 
-Install and start percona-server. Includes percona.config and percona.repo.
+Install and start percona-server. Includes percona.config, percona.client and percona.repo.
 
 ``percona.client``
 -------

@@ -4,27 +4,16 @@
 # Not all values listed here are considered as default-variables
 #
 mysql:
-  version: 5.7
-  repos:
-    # each listitem will directly passed to states.pkgrepo
-    # yums gpgkey beginning with 'file://' will be copied from salt://percona/files/
-    - name: deb https://repo.example.com/apt xenial main
-      key_url: salt://percona/files/my-keyring.gpg
-  root_password: <password>
+  root_password: milch
   reload_on_change: True
-  datadir: /var/lib/mysql
-  config_directory: #there is a default for every distribution but you can overvrite if you want to
   config:
-    # defintions for my.cnf are going to overwrite default-config
-    # every other file will managed in config directory
     my.cnf:
       mysqld:
         thread_pool_size: 3
         table_open_cache: 4000
       append:
-        "!includedir /etc/mysql/conf.d/": no_param
-        "!includedir /etc/mysql/percona-server.conf.d/": no_param
-
+        '!includedir /etc/mysql/conf.d/': no_param
+        '!includedir /etc/mysql/percona-server.conf.d/': no_param
     server.cnf:
       client:
         port: 3306
@@ -44,6 +33,8 @@ mysql:
         bind_address: 127.0.0.1
         symbolic_links: 0
         skip_external_locking: no_param
+        thread_cache_size: -1
+        thread_pool_size: 4
       mysqldump:
         quick: no_param
         quote_names: no_param
