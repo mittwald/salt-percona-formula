@@ -13,9 +13,12 @@ def __virtual__():
 
 def setglobal(name, value, fail_on_readonly=True, **connection_args):
     name = __salt__['mysql.quote_identifier'](name)
-    value = MySQLdb.escape_string(str(value))
 
-    query = 'SET GLOBAL %s = %s' % (name, value)
+    if type(value) is int:
+        query = 'SET GLOBAL %s = %d' % (name, value)
+    else:
+        value = MySQLdb.escape_string(str(value))
+        query = 'SET GLOBAL %s = "%s"' % (name, value)
 
     result = __salt__['mysql.query']('mysql', query, **connection_args)
     if len(result) == 0 and 'mysql.error' in __context__:
