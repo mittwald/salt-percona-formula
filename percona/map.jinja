@@ -19,6 +19,7 @@
       'repos': [
         {
           'name': 'deb http://repo.percona.com/apt ' ~ cur_oscodename ~ ' main',
+          'file': '/etc/apt/sources.list.d/percona.list',
           'key_url': 'salt://percona/files/percona-keyring.gpg',
         },
       ]
