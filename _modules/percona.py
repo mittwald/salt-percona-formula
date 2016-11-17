@@ -14,15 +14,19 @@ def __virtual__():
 def setglobal(name, value, fail_on_readonly=True, **connection_args):
     name = __salt__['mysql.quote_identifier'](name)
 
-    if type(value) is int:
+    if isinstance(value, int):
         query = 'SET GLOBAL %s = %d' % (name, value)
+    elif isinstance(value, bool):
+        query = 'SET GLOBAL %s = %r' % (name, value)
     else:
         value = MySQLdb.escape_string(str(value))
         query = 'SET GLOBAL %s = "%s"' % (name, value)
 
+
     result = __salt__['mysql.query']('mysql', query, **connection_args)
     if len(result) == 0 and 'mysql.error' in __context__:
         err = __context__['mysql.error']
+        del(__context__['mysql.error'])
         is_readonly = '1238' in err
 
         if fail_on_readonly or not is_readonly:

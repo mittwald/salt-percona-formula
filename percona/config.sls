@@ -11,6 +11,11 @@
 include:
   - .service
 
+mysql_python_dep:
+  pkg.installed:
+    - name: {{ percona_settings.python_mysql }}
+
+
 {% if 'config' in percona_settings and percona_settings.config is mapping %}
 {% set global_params= {} %}
 {%   if 'my.cnf' in percona_settings.config %}
@@ -48,4 +53,5 @@ include:
     - fail_on_readonly: False
     - require:
       - service: percona_svc
+      - pkg: mysql_python_dep
 {% endfor %}

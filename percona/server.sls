@@ -13,10 +13,6 @@ include:
   - .config
   - .service
 
-mysql_python_dep:
-  pkg.installed:
-    - name: {{ percona_settings.python_mysql }}
-
 {% if percona_settings.get('root_password', False) %}
 {% if os_family == 'Debian' %}
 percona_debconf_utils:

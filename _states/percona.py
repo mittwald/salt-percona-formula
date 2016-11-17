@@ -8,6 +8,21 @@ def __virtual__():
     return 'percona.setglobal' in __salt__
 
 
+def _str_to_bool(value):
+    if value.lower() in ('yes', 'true', 'on'):
+        return True
+    elif value.lower() in ('no', 'false', 'off'):
+        return False
+    return value
+
+def _accept_int_as_bool(value):
+    if isinstance(value, int) and value == 1:
+        return True
+    elif isinstance(value, int) and value == 0:
+        return False
+    return value
+
+
 def setglobal(name, value, fail_on_missing=True, fail_on_readonly=True, **connection_args):
     if not __salt__['percona.hasglobal'](name, **connection_args):
         return {'name': name,
@@ -21,7 +36,10 @@ def setglobal(name, value, fail_on_missing=True, fail_on_readonly=True, **connec
            'comment': 'Variable {0} is already set'.format(name)}
 
     existing_value = __salt__['percona.getglobal'](name, **connection_args)
-    if existing_value == str(value):
+    if isinstance(_str_to_bool(existing_value.lower()), bool):
+        if _str_to_bool(existing_value.lower()) == _accept_int_as_bool(value):
+            return ret
+    elif _str_to_bool(existing_value.lower()) == _str_to_bool(str(value).lower()):
         return ret
 
     ret['comment'] = 'Set variable %s to %s' % (name, value)
