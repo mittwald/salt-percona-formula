@@ -14,6 +14,7 @@ include:
 mysql_python_dep:
   pkg.installed:
     - name: {{ percona_settings.python_mysql }}
+    - reload_modules: True
 
 
 {% if 'config' in percona_settings and percona_settings.config is mapping %}
