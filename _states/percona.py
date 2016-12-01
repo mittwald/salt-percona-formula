@@ -55,10 +55,16 @@ def setglobal(name, value, fail_on_missing=True, fail_on_readonly=True, **connec
 
     try:
         result = __salt__['percona.setglobal'](name, value, fail_on_readonly=False, **connection_args)
-        if not result:
+        if result == 'readonly':
             ret['comment'] = 'Variable %s is read-only' % name
             ret['changes'] = {}
             ret['result'] = False if fail_on_readonly else None
+        elif result == 'query_cache_type':
+            ret['comment'] = 'Variable %s cannot be enabled dynamically if server has been started with disabled Query Cache' % name
+            ret['changes'] = {}
+            ret['result'] = False if fail_on_readonly else None
+        elif not result:
+            ret['result'] = False
         else:
             ret['result'] = True
     except Exception as e:
