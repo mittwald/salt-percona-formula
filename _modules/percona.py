@@ -1,14 +1,19 @@
 import salt.modules.mysql
 import salt.exceptions
 import salt.utils
-import MySQLdb
 import logging
+
+try:
+    import MySQLdb
+    HAS_MYSQL = True
+except ImportError:
+    HAS_MYSQL = False
 
 log = logging.getLogger(__name__)
 
 
 def __virtual__():
-    return salt.modules.mysql.__virtual__()
+    return HAS_MYSQL
 
 
 def setglobal(name, value, fail_on_readonly=True, **connection_args):
