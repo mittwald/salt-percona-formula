@@ -33,13 +33,23 @@ def setglobal(name, value, fail_on_readonly=True, **connection_args):
         err = __context__['mysql.error']
         del(__context__['mysql.error'])
         is_readonly = '1238' in err
+        is_query_cache_type = '1651' in err
 
-        if fail_on_readonly or not is_readonly:
-            raise Exception('Cannot set global variable %s: %s' % (name, err))
-        else:
-            logging.warning('Variable %s is read-only' % name)
+        if is_readonly:
+            if fail_on_readonly:
+                raise Exception('Cannot set read-only global variable %s: %s' % (name, err))
+            else:
+                logging.warning('Variable %s is read-only' % name)
+                return 'readonly'
+        elif is_query_cache_type:
+            if fail_on_readonly:
+                raise Exception('Cannot enable variable %s dynamically: %s' % (name, err))
+            else:
+                logging.warning('Variable %s cannot be enabled dynamically: %s' % (name, err))
+                return 'query_cache_type'
 
-        return False
+        raise Exception('Cannot set global variable %s: %s' % (name, err))
+
     return True
 
 
