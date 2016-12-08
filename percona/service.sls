@@ -9,3 +9,7 @@ percona_svc:
     - enable: True
     - require:
       - pkg: percona_server
+{% if percona_settings.reload_on_initial_conf %}
+    - onchanges:
+      - pkg: percona_server
+{% endif %}

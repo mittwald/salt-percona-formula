@@ -42,6 +42,10 @@ mysql_python_dep:
     - watch_in:
       - service: percona_svc
 {%     endif %}
+{%     if percona_settings.reload_on_initial_conf %}
+    - require_in:
+      - service: percona_svc
+{%     endif %}
 {%   endfor %}
 {% endif %}
 
