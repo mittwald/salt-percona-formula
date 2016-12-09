@@ -46,6 +46,14 @@ mysql_python_dep:
 {% endif %}
 
 {% for global, value in global_params.iteritems() %}
+
+{% if 'tmpdir' in global %}
+{{ value }}:
+  file.directory:
+    - mode: 1777
+    - makedirs: True
+{% endif %}
+
 {{ global }}:
   percona.setglobal:
     - value: {{ value }}
