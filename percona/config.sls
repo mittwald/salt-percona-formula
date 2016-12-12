@@ -5,8 +5,6 @@
     - makedirs: True
     - user: root
     - group: root
-    - require_in:
-      - pkg: percona_client
 
 include:
   - .service
@@ -38,6 +36,11 @@ mysql_python_dep:
     - template: jinja
     - context:
         config: {{ content |default({}) }}
+    - require_in:
+      - pkg: percona_client
+      - pkg: percona_server
+    - require:
+      - file: {{ percona_settings.config_directory }}
 {%     if percona_settings.reload_on_change %}
     - watch_in:
       - service: percona_svc
@@ -52,6 +55,8 @@ mysql_python_dep:
   file.directory:
     - mode: 1777
     - makedirs: True
+    - require_in:
+      - pkg: percona_server
 {% endif %}
 
 {{ global }}:
