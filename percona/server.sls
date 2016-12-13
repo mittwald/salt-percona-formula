@@ -63,3 +63,29 @@ mysql_initialize:
     - require_in:
       - service: percona_svc
 {% endif %}
+
+{% for name, user in percona_settings.db_users.items() %}
+mysql_user_{{ name }}_{{ user['host'] }}:
+  mysql_user.present:
+    - name: {{ name }}
+    - host: {{ user['host'] }}
+    - password: {{ user['password'] }}
+    - connection_pass: {{ percona_settings.get('root_password', '') }}
+    - require:
+      - service: percona_svc
+{%   if os_family in ['RedHat', 'Suse'] %}
+      - mysql_user: mysql_root_password
+{%   endif %}
+{%   for db in user['databases'] %}
+mysql_grant_{{ name }}_{{ user['host'] }}_{{ loop.index0 }}:
+  mysql_grants.present:
+    - grant: '{{db['grant']|join(",")}}'
+    - database: '{{ db['database'] }}.*'
+    - user: {{ name }}
+    - host: {{ user['host'] }}
+    - connection_pass: {{ percona_settings.get('root_password', '') }}
+    - require:
+      - mysql_user: mysql_user_{{ name }}_{{ user['host'] }}
+
+{%   endfor %}
+{% endfor %}
