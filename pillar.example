@@ -50,3 +50,11 @@ mysql:
         max_allowed_packet: 16M
       isamchk:
         key_buffer_size: 16M
+
+  db_users:
+    root:
+      host: 127.0.0.1
+      password: foobar
+      databases:
+        - database: '*'
+          grant: ['all privileges']
