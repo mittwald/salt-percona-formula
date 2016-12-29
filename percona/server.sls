@@ -72,6 +72,7 @@ mysql_user_{{ name }}_{{ user['host'] }}:
     - password: {{ user['password'] }}
     - connection_pass: {{ percona_settings.get('root_password', '') }}
     - require:
+      - pkg: mysql_python_dep
       - service: percona_svc
 {%   if os_family in ['RedHat', 'Suse'] %}
       - mysql_user: mysql_root_password
