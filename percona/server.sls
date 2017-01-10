@@ -13,6 +13,7 @@ include:
   - .client
   - .config
   - .service
+  - .motd
 
 {% if percona_settings.get('root_password', False) %}
 {% if os_family == 'Debian' %}

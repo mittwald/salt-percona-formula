@@ -1,0 +1,9 @@
+#!/bin/bash
+
+MYSQLD="$(which mysqld)"
+
+if [[ -x "${MYSQLD}" ]] ; then
+    echo
+    "${MYSQLD}" --version
+    echo
+fi
