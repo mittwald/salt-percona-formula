@@ -6,3 +6,4 @@ mysql:
   root_user: root
   reload_on_change: False
   datadir: /var/lib/mysql
+  install_motd: True
