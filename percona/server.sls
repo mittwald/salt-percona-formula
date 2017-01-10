@@ -1,5 +1,6 @@
 {% from "percona/map.jinja" import percona_settings with context %}
 {% set os_family = salt['grains.get']('os_family') %}
+{% set initsystem = salt['grains.get']('init') %}
 {% set repolist = [] %}
 {% if 'repos' in percona_settings and percona_settings.repos is list %}
 {%   for repo in percona_settings.repos if repo is mapping and 'name' in repo %}
@@ -90,3 +91,27 @@ mysql_grant_{{ name }}_{{ user['host'] }}_{{ loop.index0 }}:
 
 {%   endfor %}
 {% endfor %}
+
+{% if initsystem == 'systemd' %}
+percona_remove_limits:
+  file.managed:
+    - name: /etc/systemd/system/mysql.service.d/override.conf
+    - makedirs: True
+    - user: root
+    - group: root
+    - mode: 644
+    - contents: |
+        [Service]
+        LimitNOFILE=infinity
+        LimitMEMLOCK=infinity
+    - require_in:
+      - pkg: percona_server
+  module.run:
+    - name: service.systemctl_reload
+    - onchanges:
+      - file: /etc/systemd/system/mysql.service.d/override.conf
+{%   if percona_settings.reload_on_change %}
+    - watch_in:
+      - service: percona_svc
+{%   endif %}
+{% endif %}
