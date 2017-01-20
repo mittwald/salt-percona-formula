@@ -87,6 +87,7 @@ mysql_grant_{{ name }}_{{ user['host'] }}_{{ loop.index0 }}:
     - user: {{ name }}
     - host: {{ user['host'] }}
     - connection_pass: {{ percona_settings.get('root_password', '') }}
+    - grant_option: {{ db['grant_option']|default(False) }}
     - require:
       - mysql_user: mysql_user_{{ name }}_{{ user['host'] }}
 
