@@ -59,3 +59,4 @@ mysql:
       databases:
         - database: '*'
           grant: ['all privileges']
+          grant_option: False
