@@ -29,7 +29,7 @@ def setglobal(name, value, fail_on_readonly=True, **connection_args):
 
 
     result = __salt__['mysql.query']('mysql', query, **connection_args)
-    if len(result) == 0 and 'mysql.error' in __context__:
+    if ( ( isinstance(result, bool) and result == False ) or ( isinstance(result, dict) and len(result) == 0 ) ) and 'mysql.error' in __context__:
         err = __context__['mysql.error']
         del(__context__['mysql.error'])
         is_readonly = '1238' in err
