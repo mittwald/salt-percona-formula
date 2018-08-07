@@ -61,9 +61,9 @@
     merge=True)
 %}
 
-{## Bug in percona 5.6 needs " in root password to be escaped. See https://jira.percona.com/browse/PS-4572 ##}
+{## Bug in older percona version requires " in root password to be escaped. See https://jira.percona.com/browse/PS-4572 ##}
 {% if percona_settings.root_password %}
-{%   if percona_settings.version|string|trim == '5.6' %}
+{%   if percona_settings.version|string|trim == '5.6' or percona_settings.version|string|trim == '5.5' %}
 {%     set debconf_password_entry = percona_settings.root_password|replace('"', '\\"') %}
 {%   else %}
 {%     set debconf_password_entry = percona_settings.root_password %}
