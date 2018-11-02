@@ -7,3 +7,4 @@ mysql:
   reload_on_change: False
   datadir: /var/lib/mysql
   install_motd: True
+  hold_server_pkg: False
