@@ -21,19 +21,27 @@ Available states
 ``percona.server``
 -------
 
-Install and start percona-server. Includes percona.config, percona.client and percona.repo.
+Install and start percona-server. Includes percona.config and percona.install.
 
 ``percona.client``
 -------
 
-Install the client. Includes percona.config and percona.repo.
+Install the client. Includes percona.config-files and percona.repo.
+
+``percona.install``
+-------
+
+Install percona-server and enable it. Includes percona.config-files, percona.client and percona.repo.
+
+``percona.config-files``
+-------
+
+If pillar "mysql.config.<filename>" is set, manage those.
 
 ``percona.config``
 -------
 
-If pillar "mysql.config.<filename>" is set, manage those. Server will not be
-restarted by default, set pillar "mysql.restart_on_change: True" for
-autorestart on config change.
+Includes percona.config-files and adds autorestart on config change if pillar "mysql.restart_on_change: True" is set. Additionally changes dynamic configuration at runtime.
 
 ``percona.repo``
 -------

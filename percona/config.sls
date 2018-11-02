@@ -1,12 +1,7 @@
 {% from "percona/map.jinja" import percona_settings with context %}
 
-{{ percona_settings.config_directory }}:
-  file.directory:
-    - makedirs: True
-    - user: root
-    - group: root
-
 include:
+  - .config-files
   - .service
 
 mysql_python_dep:
@@ -15,8 +10,9 @@ mysql_python_dep:
     - reload_modules: True
 
 
+{% set extend_written = false %}
 {% if 'config' in percona_settings and percona_settings.config is mapping %}
-{% set global_params= {} %}
+{%   set global_params= {} %}
 {%   if 'my.cnf' in percona_settings.config %}
 {%     do global_params.update(percona_settings.config['my.cnf'].get('mysqld',{})) %}
 {%   endif %}
@@ -27,23 +23,15 @@ mysql_python_dep:
 {%     else %}
 {%       set filepath = percona_settings.config_directory + '/' + file %}
 {%     endif %}
-{{ filepath }}:
-  file.managed:
-    - user: root
-    - group: root
-    - mode: 0644
-    - source: salt://percona/files/mysql.cnf.j2
-    - template: jinja
-    - context:
-        config: {{ content |default({}) }}
-    - require_in:
-      - pkg: percona_client
-      - pkg: percona_server
-    - require:
-      - file: {{ percona_settings.config_directory }}
 {%     if percona_settings.reload_on_change %}
-    - watch_in:
-      - service: percona_svc
+{%       if not extend_written %}
+extend:
+{%         set extend_written = true %}
+{%       endif %}
+  {{ filepath }}:
+    file:
+        - watch_in:
+          - service: percona_svc
 {%     endif %}
 {%   endfor %}
 {% endif %}
