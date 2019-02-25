@@ -91,6 +91,9 @@ mysql_grant_{{ name }}_{{ user['host'] }}_{{ loop.index0 }}:
     - host: {{ user['host'] }}
     - connection_pass: {{ percona_settings.get('root_password', '') }}
     - grant_option: {{ db['grant_option']|default(False) }}
+{%- if 'ssl_option' in db.keys() and db['ssl_option'] is list %}
+    - ssl_option: {{ db['ssl_option'] | json }}
+{%- endif %}
     - require:
       - mysql_user: mysql_user_{{ name }}_{{ user['host'] }}
 
