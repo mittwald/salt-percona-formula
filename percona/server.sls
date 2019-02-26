@@ -72,7 +72,7 @@ mysql_initialize:
 {% for name, user in percona_settings.db_users.items() %}
 mysql_user_{{ name }}_{{ user['host'] }}:
   mysql_user.present:
-    - name: {{ name }}
+    - name: {{ user['name'] if 'name' in user else name }}
     - host: {{ user['host'] }}
     - password: {{ user['password'] }}
     - connection_pass: {{ percona_settings.get('root_password', '') }}
