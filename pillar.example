@@ -61,3 +61,5 @@ mysql:
         - database: '*'
           grant: ['all privileges']
           grant_option: False
+      ssl_option:
+        - SSL: True
