@@ -24,7 +24,6 @@
         config: {{ content |default({}) }}
     - require_in:
       - pkg: percona_client
-      - pkg: percona_server
     - require:
       - file: {{ percona_settings.config_directory }}
 {%   endfor %}

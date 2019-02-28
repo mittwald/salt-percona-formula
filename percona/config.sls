@@ -23,13 +23,16 @@ mysql_python_dep:
 {%     else %}
 {%       set filepath = percona_settings.config_directory + '/' + file %}
 {%     endif %}
-{%     if percona_settings.reload_on_change %}
-{%       if not extend_written %}
+{%     if not extend_written %}
 extend:
 {%         set extend_written = true %}
-{%       endif %}
+{%     endif %}
   {{ filepath }}:
     file:
+        - require_in:
+          - pkg: percona_client
+          - pkg: percona_server
+{%     if percona_settings.reload_on_change %}
         - watch_in:
           - service: percona_svc
 {%     endif %}
