@@ -2,7 +2,7 @@
 
 include:
   - .repo
-  - .config
+  - .config-files
 
 percona_client:
   pkg.installed:
