@@ -16,6 +16,7 @@ mysql:
   datadir: /var/lib/mysql
   config_directory: #there is a default for every distribution but you can overvrite if you want to
   install_motd: True #print mysqld version as part of motd. Ubuntu only at the moment
+  remove_test_database: False #removes a database called test. Caution: Will always remove any database called "test", not just the database created by mysql_install_db
   config:
     # defintions for my.cnf are going to overwrite default-config
     # every other file will managed in config directory

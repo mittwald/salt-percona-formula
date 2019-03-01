@@ -120,3 +120,13 @@ percona_remove_limits:
       - service: percona_svc
 {%   endif %}
 {% endif %}
+
+{% if percona_settings.remove_test_database|to_bool %}
+remove_test_database:
+  mysql_database.absent:
+    - name: test
+    - connection_pass: {{ percona_settings.get('root_password', '') }}
+    - require:
+      - service: percona_svc
+      - pkg: mysql_python_dep
+{% endif %}

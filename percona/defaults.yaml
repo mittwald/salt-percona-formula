@@ -8,3 +8,4 @@ mysql:
   datadir: /var/lib/mysql
   install_motd: True
   hold_server_pkg: False
+  remove_test_database: False
