@@ -10,8 +10,8 @@ mysql_python_dep:
     - reload_modules: True
 
 
-{% set extend_written = false %}
-{% if 'config' in percona_settings and percona_settings.config is mapping %}
+{% if 'config' in percona_settings and percona_settings.config is mapping and percona_settings.config|length > 0 %}
+extend:
 {%   set global_params= {} %}
 {%   if 'my.cnf' in percona_settings.config %}
 {%     do global_params.update(percona_settings.config['my.cnf'].get('mysqld',{})) %}
@@ -22,10 +22,6 @@ mysql_python_dep:
 {%       set filepath = percona_settings.my_cnf_path %}
 {%     else %}
 {%       set filepath = percona_settings.config_directory + '/' + file %}
-{%     endif %}
-{%     if not extend_written %}
-extend:
-{%         set extend_written = true %}
 {%     endif %}
   {{ filepath }}:
     file:
