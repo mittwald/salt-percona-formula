@@ -86,7 +86,7 @@ mysql_user_{{ name }}_{{ user['host'] }}:
 mysql_grant_{{ name }}_{{ user['host'] }}_{{ loop.index0 }}:
   mysql_grants.present:
     - grant: '{{db['grant']|join(",")}}'
-    - database: '{{ db['database'] }}.*'
+    - database: '{{ db['database'] if '.' in db['database'] else db['database'] ~ '.*' }}'
     - user: {{ user['name'] if 'name' in user else name }}
     - host: {{ user['host'] }}
     - connection_pass: {{ percona_settings.get('root_password', '') }}
