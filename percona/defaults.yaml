@@ -5,6 +5,7 @@ mysql:
   server_svc: mysql
   root_user: root
   reload_on_change: False
+  tcmalloc_enabled: False
   datadir: /var/lib/mysql
   install_motd: True
   hold_server_pkg: False
