@@ -140,7 +140,7 @@ percona_tcmalloc_enabled:
         Environment="LD_PRELOAD=/usr/lib/libtcmalloc_minimal.so.4"
 {%   else %}
 percona_tcmalloc_disabled:
-  file.remove:
+  file.missing:
     - name: /etc/systemd/system/mysql.service.d/tcmalloc.conf
 {%   endif %}
     - require_in:
