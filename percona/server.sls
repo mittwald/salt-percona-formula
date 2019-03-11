@@ -122,6 +122,37 @@ percona_remove_limits:
     - watch_in:
       - service: percona_svc
 {%   endif %}
+
+{%   if percona_settings.tcmalloc_enabled %}
+install_libtcmalloc:
+    pkg.installed:
+      - name: libtcmalloc-minimal4
+
+percona_tcmalloc_enabled:
+  file.managed:
+    - name: /etc/systemd/system/mysql.service.d/tcmalloc.conf
+    - makedirs: True
+    - user: root
+    - group: root
+    - mode: 644
+    - contents: |
+        [Service]
+        Environment="LD_PRELOAD=/usr/lib/libtcmalloc_minimal.so.4"
+{%   else %}
+percona_tcmalloc_disabled:
+  file.remove:
+    - name: /etc/systemd/system/mysql.service.d/tcmalloc.conf
+{%   endif %}
+    - require_in:
+      - pkg: percona_server
+  module.run:
+    - name: service.systemctl_reload
+    - onchanges:
+      - file: /etc/systemd/system/mysql.service.d/tcmalloc.conf
+{%   if percona_settings.reload_on_change %}
+    - watch_in:
+      - service: percona_svc
+{%   endif %}
 {% endif %}
 
 {% if percona_settings.remove_test_database|to_bool %}

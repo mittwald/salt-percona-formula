@@ -12,6 +12,7 @@ mysql:
       key_url: salt://percona/files/my-keyring.gpg
   root_password: <password>
   reload_on_change: True
+  tcmalloc_enabled: True
   hold_server_pkg: True #hold the installed version of percona-server (prevents automatic restarts on upgrade)
   datadir: /var/lib/mysql
   config_directory: #there is a default for every distribution but you can overvrite if you want to
