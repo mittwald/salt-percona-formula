@@ -23,11 +23,11 @@ percona_debconf_utils:
 
 mysql_debconf:
   debconf.set:
-    - name: {{ percona_settings.server_pkg }}-{{ percona_settings.versionstring }}
+    - name: {{ percona_settings.server_pkg }}{{ percona_settings.versionstring }}
     - data:
-        '{{ percona_settings.server_pkg }}-{{ percona_settings.versionstring }}/root-pass': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
-        '{{ percona_settings.server_pkg }}-{{ percona_settings.versionstring }}/re-root-pass': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
-        '{{ percona_settings.server_pkg }}-{{ percona_settings.versionstring }}/start_on_boot': {'type': 'boolean', 'value': 'true'}
+        '{{ percona_settings.server_pkg }}{{ percona_settings.versionstring }}/root-pass': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
+        '{{ percona_settings.server_pkg }}{{ percona_settings.versionstring }}/re-root-pass': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
+        '{{ percona_settings.server_pkg }}{{ percona_settings.versionstring }}/start_on_boot': {'type': 'boolean', 'value': 'true'}
         '{{ percona_settings.server_pkg }}/root_password': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
         '{{ percona_settings.server_pkg }}/root_password_again': {'type': 'password', 'value': '{{ percona_settings.debconf_password_entry }}'}
     - require_in:
@@ -49,7 +49,7 @@ mysql_root_password:
 
 percona_server:
   pkg.installed:
-    - name: {{ percona_settings.server_pkg }}-{{ percona_settings.versionstring }}
+    - name: {{ percona_settings.server_pkg }}{{ percona_settings.versionstring }}
     - hold: {{ percona_settings.hold_server_pkg }}
     - require:
 {% for r in repolist %}

@@ -71,10 +71,13 @@
 {%   do percona_settings.update({ 'debconf_password_entry': debconf_password_entry }) %}
 {% endif %}
 
+{% if percona_settings.version|string|trim != '' %}
 {% if grains.os_family == 'RedHat' %}
 {%   set versionstring = percona_settings.version | replace('.','') %}
 {% else %}
 {%   set versionstring = percona_settings.version %}
 {% endif %}
-{% do percona_settings.update({ 'versionstring': versionstring }) %}
-
+{% do percona_settings.update({ 'versionstring': '-' ~ versionstring }) %}
+{% else %}
+{% do percona_settings.update({ 'versionstring': '' }) %}
+{% endif %}

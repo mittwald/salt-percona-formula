@@ -6,4 +6,4 @@ include:
 
 percona_client:
   pkg.installed:
-    - name: {{ percona_settings.client_pkg }}-{{ percona_settings.versionstring }}
+    - name: {{ percona_settings.client_pkg }}{{ percona_settings.versionstring }}
