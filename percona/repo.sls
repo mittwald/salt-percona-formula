@@ -17,7 +17,7 @@ gpgkey{{ loop.index }}:
 
 "perconarepo_{{ loop.index }}":
   pkgrepo.managed:
-{%     for k, v in repo.iteritems() %}
+{%     for k, v in repo.items() %}
     - {{k}}: {{v}}
 {%     endfor %}
 {%   endfor %}
